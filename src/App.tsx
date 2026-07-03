@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { scenarios, type Scenario } from './data/scenarios'
+import { categories, scenarios, type Scenario } from './data/scenarios'
 import { feelings } from './data/feelings'
 import { stickers } from './data/stickers'
 import { speak } from './speech'
@@ -41,20 +41,26 @@ function Home({
           🏆 Meus Adesivos
         </button>
       </div>
-      <h2 className="section-title">Escolha uma conversa:</h2>
-      <div className="scenario-grid">
-        {scenarios.map((s) => (
-          <button
-            key={s.id}
-            className="scenario-card"
-            style={{ backgroundColor: s.color }}
-            onClick={() => onPickScenario(s)}
-          >
-            <span className="scenario-emoji">{s.emoji}</span>
-            <span className="scenario-title">{s.title}</span>
-          </button>
-        ))}
-      </div>
+      {categories.map((cat) => (
+        <div key={cat}>
+          <h2 className="section-title">{cat}</h2>
+          <div className="scenario-grid">
+            {scenarios
+              .filter((s) => s.category === cat)
+              .map((s) => (
+                <button
+                  key={s.id}
+                  className="scenario-card"
+                  style={{ backgroundColor: s.color }}
+                  onClick={() => onPickScenario(s)}
+                >
+                  <span className="scenario-emoji">{s.emoji}</span>
+                  <span className="scenario-title">{s.title}</span>
+                </button>
+              ))}
+          </div>
+        </div>
+      ))}
     </div>
   )
 }
