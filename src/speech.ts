@@ -24,6 +24,17 @@ export function speak(text: string, onEnd?: () => void) {
   if (ptVoice) u.voice = ptVoice
   u.rate = 0.9
   u.pitch = 1.05
-  if (onEnd) u.onend = onEnd
+  if (onEnd) {
+    let called = false
+    const finish = () => {
+      if (called) return
+      called = true
+      onEnd()
+    }
+    u.onend = finish
+    u.onerror = finish
+    const estimatedMs = Math.min(1500 + text.length * 90, 12000)
+    setTimeout(finish, estimatedMs)
+  }
   window.speechSynthesis.speak(u)
 }
