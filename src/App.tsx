@@ -1,10 +1,11 @@
 import { useEffect, useState } from 'react'
 import { scenarios, type Scenario } from './data/scenarios'
 import { feelings } from './data/feelings'
+import { stickers } from './data/stickers'
 import { speak } from './speech'
 import './App.css'
 
-type Screen = 'home' | 'dialogue' | 'feelings'
+type Screen = 'home' | 'dialogue' | 'feelings' | 'stickers'
 
 const STARS_KEY = 'fala-thales-stars'
 
@@ -16,10 +17,12 @@ function Home({
   stars,
   onPickScenario,
   onFeelings,
+  onStickers,
 }: {
   stars: number
   onPickScenario: (s: Scenario) => void
   onFeelings: () => void
+  onStickers: () => void
 }) {
   return (
     <div className="home">
@@ -30,9 +33,14 @@ function Home({
           ⭐ {stars}
         </div>
       </header>
-      <button className="feelings-btn" onClick={onFeelings}>
-        💛 Como eu me sinto
-      </button>
+      <div className="home-actions">
+        <button className="feelings-btn" onClick={onFeelings}>
+          💛 Como eu me sinto
+        </button>
+        <button className="stickers-btn" onClick={onStickers}>
+          🏆 Meus Adesivos
+        </button>
+      </div>
       <h2 className="section-title">Escolha uma conversa:</h2>
       <div className="scenario-grid">
         {scenarios.map((s) => (
@@ -135,6 +143,40 @@ function Dialogue({
   )
 }
 
+function Stickers({ stars, onBack }: { stars: number; onBack: () => void }) {
+  const unlocked = stickers.filter((s) => stars >= s.starsNeeded).length
+  const next = stickers.find((s) => stars < s.starsNeeded)
+  return (
+    <div className="stickers">
+      <button className="back-btn" onClick={onBack}>
+        ← Voltar
+      </button>
+      <h2>🏆 Meus Adesivos</h2>
+      <p className="hint centered">
+        {unlocked} de {stickers.length} adesivos · ⭐ {stars}
+        {next && ` · próximo com ${next.starsNeeded} estrelas`}
+      </p>
+      <div className="stickers-grid">
+        {stickers.map((s) => {
+          const isUnlocked = stars >= s.starsNeeded
+          return (
+            <button
+              key={s.name}
+              className={`sticker-card ${isUnlocked ? '' : 'locked'}`}
+              onClick={() => isUnlocked && speak(s.name)}
+            >
+              <span className="sticker-emoji">{isUnlocked ? s.emoji : '🔒'}</span>
+              <span className="sticker-name">
+                {isUnlocked ? s.name : `${s.starsNeeded} ⭐`}
+              </span>
+            </button>
+          )
+        })}
+      </div>
+    </div>
+  )
+}
+
 function Feelings({ onBack }: { onBack: () => void }) {
   return (
     <div className="feelings">
@@ -182,6 +224,7 @@ export default function App() {
             setScreen('dialogue')
           }}
           onFeelings={() => setScreen('feelings')}
+          onStickers={() => setScreen('stickers')}
         />
       )}
       {screen === 'dialogue' && scenario && (
@@ -192,6 +235,9 @@ export default function App() {
         />
       )}
       {screen === 'feelings' && <Feelings onBack={() => setScreen('home')} />}
+      {screen === 'stickers' && (
+        <Stickers stars={stars} onBack={() => setScreen('home')} />
+      )}
     </main>
   )
 }
