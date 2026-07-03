@@ -18,6 +18,17 @@ npm run dev
 
 Abra o endereço mostrado no navegador (funciona melhor no Chrome/Edge, que têm voz em português).
 
+## Deploy
+
+### Vercel (recomendado)
+1. Acesse [vercel.com](https://vercel.com) e entre com sua conta do GitHub.
+2. Clique em **Add New → Project** e importe o repositório `lindolfo100/tea`.
+3. Não precisa mudar nada — o Vercel detecta o Vite automaticamente. Clique em **Deploy**.
+4. O app ficará em `https://<nome-do-projeto>.vercel.app`, pronto para instalar como app no tablet (menu do navegador → "Adicionar à tela inicial").
+
+### GitHub Pages (alternativa)
+Ative em Settings → Pages → Source: **GitHub Actions**. Cada push na `main` publica em `https://lindolfo100.github.io/tea/`.
+
 ## Personalização
 
 - Novos cenários de conversa: edite `src/data/scenarios.ts`.
